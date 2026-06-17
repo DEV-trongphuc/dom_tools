@@ -536,8 +536,28 @@ export default function App() {
         {/* TAB A: SLIDE CARD CAROUSEL LIBRARY */}
         {activeTab === 'library' && (
           <div className="carousel-wrapper animate-fade-in-up">
-            <div className="content-header" style={{ textAlign: 'center', marginBottom: '0.5rem', display: 'block' }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(139, 92, 246, 0.15)', padding: '0.35rem 0.85rem', borderRadius: '50px', border: '1px solid var(--primary-glow)', color: '#c084fc', fontSize: '0.75rem', fontWeight: '600', marginBottom: '1rem', letterSpacing: '0.05em' }}>
+            <div className="home-header" style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              textAlign: 'center', 
+              marginBottom: '1.5rem',
+              gap: '0.5rem'
+            }}>
+              <div style={{ 
+                display: 'inline-flex', 
+                alignItems: 'center', 
+                gap: '0.5rem', 
+                background: 'rgba(139, 92, 246, 0.15)', 
+                padding: '0.35rem 0.85rem', 
+                borderRadius: '50px', 
+                border: '1px solid var(--primary-glow)', 
+                color: '#c084fc', 
+                fontSize: '0.75rem', 
+                fontWeight: '600', 
+                marginBottom: '0.5rem', 
+                letterSpacing: '0.05em' 
+              }}>
                 <Sparkles size={12} /> HỆ THỐNG TIỆN ÍCH MIỄN PHÍ
               </div>
               <h2 style={{ 
@@ -546,7 +566,8 @@ export default function App() {
                 background: 'linear-gradient(135deg, #e9d5ff 10%, #a78bfa 60%, #8b5cf6 100%)', 
                 WebkitBackgroundClip: 'text', 
                 WebkitTextFillColor: 'transparent',
-                display: 'inline-block'
+                display: 'block',
+                margin: '0 auto'
               }}>DOMATION Tools</h2>
               <p style={{ marginTop: '0.5rem', fontSize: '1rem', maxWidth: '600px', margin: '0.5rem auto 0' }}>
                 Trải nghiệm kho công cụ chuyển đổi tập tin trực tuyến, xử lý PDF bảo mật và các tiện ích hỗ trợ lập trình viên 100% tại Client-side.
