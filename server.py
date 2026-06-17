@@ -132,6 +132,69 @@ def docx_to_pdf():
         # Safe cleanup ignoring open handle errors on Windows
         shutil.rmtree(temp_dir, ignore_errors=True)
 
+@app.route('/api/compress/pdf', methods=['POST'])
+def compress_pdf():
+    if 'file' not in request.files:
+        return jsonify({"error": "Không tìm thấy tệp được tải lên"}), 400
+        
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"error": "Tên tệp trống"}), 400
+        
+    quality_param = request.form.get('quality', 'medium')
+    
+    temp_dir = tempfile.mkdtemp()
+    try:
+        input_path = os.path.join(temp_dir, 'input.pdf')
+        output_path = os.path.join(temp_dir, 'output.pdf')
+        file.save(input_path)
+        
+        import fitz  # PyMuPDF
+        print(f"Compressing PDF using PyMuPDF (quality={quality_param})...")
+        doc = fitz.open(input_path)
+        
+        if quality_param == 'low':
+            dpi_thresh = 100
+            dpi_targ = 100
+            img_quality = 50
+        else:  # medium
+            dpi_thresh = 150
+            dpi_targ = 150
+            img_quality = 75
+            
+        try:
+            # Optimize images in the PDF document
+            doc.rewrite_images(dpi_threshold=dpi_thresh, dpi_target=dpi_targ, quality=img_quality, lossy=True)
+        except Exception as e:
+            print(f"rewrite_images failed: {e}. Falling back to standard saving optimizations...")
+            
+        doc.save(
+            output_path, 
+            garbage=4, 
+            deflate=True, 
+            clean=True
+        )
+        doc.close()
+        
+        if os.path.exists(output_path):
+            with open(output_path, 'rb') as f:
+                pdf_data = f.read()
+                
+            return send_file(
+                io.BytesIO(pdf_data), 
+                as_attachment=True, 
+                download_name=file.filename.rsplit('.', 1)[0] + '_compressed.pdf',
+                mimetype='application/pdf'
+            )
+        else:
+            return jsonify({"error": "Nén PDF thất bại"}), 500
+            
+    except Exception as err:
+        print(f"Error compressing PDF: {err}")
+        return jsonify({"error": str(err)}), 500
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
 if __name__ == '__main__':
     port = 8000
     print("----------------------------------------------------------------")
